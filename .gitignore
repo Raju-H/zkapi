@@ -4,3 +4,4 @@ appcore/__pycache__/
 accounts/__pycache__/
 zkapi/__pycache__/
 *.pyc
+test_1.py
