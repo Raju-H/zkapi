@@ -188,7 +188,6 @@ This API provides essential functionalities for user management, including regis
 
 
 
-
 # API Documentation for Attendance Management
 
 This documentation outlines how to use the Attendance Management API. This API allows you to retrieve attendance records from devices, providing insights into user attendance for a given day.
@@ -212,10 +211,11 @@ http://<your-domain>/api/
 
 #### Example Request
 ```
-GET /api/zkapi/attendance/today/?username=device_username
+GET /api/attendance/today/?username=device_username
 ```
 
 #### Response
+
 - **Success (200 OK)**
 ```json
 [
@@ -242,6 +242,13 @@ GET /api/zkapi/attendance/today/?username=device_username
 }
 ```
 
+- **Error (403 Forbidden)**
+```json
+{
+    "error": "You do not have permission to access this device."
+}
+```
+
 - **Error (404 Not Found)**
 ```json
 {
@@ -255,6 +262,73 @@ GET /api/zkapi/attendance/today/?username=device_username
     "error": "<error_message>"
 }
 ```
+
+## Sample Code Snippets
+
+### Accessing the API using Laravel (PHP)
+
+Here’s how you can make a GET request to the attendance API using Laravel:
+
+```php
+use Illuminate\Support\Facades\Http;
+
+function getTodaysAttendance($username) {
+    $response = Http::withToken('your_api_token')->get('http://<your-domain>/api/attendance/today/', [
+        'username' => $username,
+    ]);
+
+    if ($response->successful()) {
+        return $response->json();
+    } elseif ($response->status() == 400) {
+        return ['error' => 'Username parameter is required.'];
+    } elseif ($response->status() == 404) {
+        return ['error' => 'Device not found.'];
+    } elseif ($response->status() == 403) {
+        return ['error' => 'You do not have permission to access this device.'];
+    } else {
+        return ['error' => 'An unexpected error occurred.'];
+    }
+}
+
+// Usage
+$attendanceRecords = getTodaysAttendance('device_username');
+print_r($attendanceRecords);
+```
+
+### Accessing the API using Python
+
+Here’s how you can make a GET request to the attendance API using Python with the `requests` library:
+
+```python
+import requests
+
+def get_todays_attendance(username):
+    url = 'http://<your-domain>/api/attendance/today/'
+    headers = {'Authorization': 'Bearer your_api_token'}
+    
+    response = requests.get(url, headers=headers, params={'username': username})
+    
+    if response.status_code == 200:
+        return response.json()
+    elif response.status_code == 400:
+        return {"error": "Username parameter is required."}
+    elif response.status_code == 404:
+        return {"error": "Device not found."}
+    elif response.status_code == 403:
+        return {"error": "You do not have permission to access this device."}
+    else:
+        return {"error": f"An unexpected error occurred: {response.text}"}
+
+# Usage
+attendance_records = get_todays_attendance('device_username')
+print(attendance_records)
+```
+
+## Conclusion
+
+This updated documentation provides a comprehensive overview of how to access today’s attendance records through your API, including error handling and sample code in both Laravel and Python. Be sure to replace `<your-domain>` and `your_api_token` with actual values when implementing the code.
+
+
 
 ## Authentication
 

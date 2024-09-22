@@ -4,6 +4,7 @@ from accounts.models import User
 
 class Device(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False, unique=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     area = models.CharField(max_length=100)
     username = models.CharField(max_length=100, unique=True)

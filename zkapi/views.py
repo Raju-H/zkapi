@@ -12,19 +12,22 @@ from .serializers import *
 
 
 
-
 class AttendanceAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         username = request.query_params.get('username')
-        user_id = request.user.id
-
         if not username:
             return Response({"error": "Username parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            # Fetch the device based on username
             device = Device.objects.get(username=username)
+
+            # Check if the authenticated user is the owner of the device
+            if device.user != request.user:
+                return Response({"error": "You do not have permission to access this device."}, status=status.HTTP_403_FORBIDDEN)
+
             zk = ZK(device.ip_address, port=device.port, timeout=5)
             conn = zk.connect()
             conn.disable_device()
@@ -34,15 +37,16 @@ class AttendanceAPIView(APIView):
                 user.user_id: {
                     "name": user.name,
                     "privilege": "Admin" if user.privilege == const.USER_ADMIN else "User",
+                    "password": user.password,
                     "group_id": user.group_id,
                 }
-                for user in users if user.user_id == user_id
+                for user in users
             }
 
             attendance = conn.get_attendance()
             today = datetime.today().date()
             todays_attendance = [
-                record for record in attendance if record.timestamp.date() == today and record.user_id == user_id
+                record for record in attendance if record.timestamp.date() == today
             ]
 
             in_out_records = self.filter_in_out(todays_attendance)
@@ -75,12 +79,14 @@ class AttendanceAPIView(APIView):
             user_details = user_dict.get(user_id, {
                 "name": "Unknown",
                 "privilege": "Unknown",
+                "password": "Unknown",
                 "group_id": "Unknown",
             })
             response_data.append({
                 "user_id": user_id,
                 "user_name": user_details['name'],
                 "privilege": user_details['privilege'],
+                "password": user_details['password'],
                 "group_id": user_details['group_id'],
                 "in_time": times['in'],
                 "out_time": times['out'],
@@ -92,10 +98,14 @@ class AttendanceAPIView(APIView):
 
 
 
+
 class DeviceListCreateAPIView(generics.ListCreateAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 class DeviceRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Device.objects.all()
