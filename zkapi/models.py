@@ -1,5 +1,6 @@
 from uuid import uuid4
 from django.db import models
+from accounts.models import User
 
 class Device(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False, unique=True)

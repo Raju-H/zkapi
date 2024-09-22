@@ -12,11 +12,14 @@ from .serializers import *
 
 
 
+
 class AttendanceAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         username = request.query_params.get('username')
+        user_id = request.user.id
+
         if not username:
             return Response({"error": "Username parameter is required."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -31,16 +34,15 @@ class AttendanceAPIView(APIView):
                 user.user_id: {
                     "name": user.name,
                     "privilege": "Admin" if user.privilege == const.USER_ADMIN else "User",
-                    "password": user.password,
                     "group_id": user.group_id,
                 }
-                for user in users
+                for user in users if user.user_id == user_id
             }
 
             attendance = conn.get_attendance()
             today = datetime.today().date()
             todays_attendance = [
-                record for record in attendance if record.timestamp.date() == today
+                record for record in attendance if record.timestamp.date() == today and record.user_id == user_id
             ]
 
             in_out_records = self.filter_in_out(todays_attendance)
@@ -73,14 +75,12 @@ class AttendanceAPIView(APIView):
             user_details = user_dict.get(user_id, {
                 "name": "Unknown",
                 "privilege": "Unknown",
-                "password": "Unknown",
                 "group_id": "Unknown",
             })
             response_data.append({
                 "user_id": user_id,
                 "user_name": user_details['name'],
                 "privilege": user_details['privilege'],
-                "password": user_details['password'],
                 "group_id": user_details['group_id'],
                 "in_time": times['in'],
                 "out_time": times['out'],
