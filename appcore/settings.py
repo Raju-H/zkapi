@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
-
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +26,7 @@ SECRET_KEY = "django-insecure-eysbj5y5xu7rre#y3qnp4*dw2*@pt^lj)yj&11lgl@f^l*ckla
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -91,21 +90,21 @@ WSGI_APPLICATION = "appcore.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
+}
 
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'zkapi',
         'USER': 'zkapi',
-        'PASSWORD': 'password',
-        'HOST': '=]-[0p9o+}_{)P(O',
+        'PASSWORD': '=]-[0p9o+}_{)P(O',
+        'HOST': 'localhost',
         'PORT': '',
     }
 }
@@ -167,5 +166,5 @@ EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = ''
 
 
-import os
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
