@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "zkapi",
     "rest_framework",
     "rest_framework_simplejwt",
+    "frontend",
 ]
 
 # Rest Framework Config
@@ -98,16 +99,16 @@ DATABASES = {
 }
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zkapi',
-        'USER': 'zkapi',
-        'PASSWORD': '=]-[0p9o+}_{)P(O',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'zkapi',
+#         'USER': 'zkapi',
+#         'PASSWORD': '=]-[0p9o+}_{)P(O',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
