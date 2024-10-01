@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  django_gunicorn:
+    container_name: django_gunicorn
+    volumes:
+      - static:/static
+    env_file:
+      - .env
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://attendence:k^OSf)$I9x%*@postgres:5432/attendence
+    restart: always
+
+  nginx:
+    container_name: nginx
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - "80:80"
+    depends_on:
+      - django_gunicorn
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=attendence
+      - POSTGRES_USER=attendence
+      - POSTGRES_PASSWORD=k^OSf)$I9x%*
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  static:
+  pgdata:

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "frontend",
+    "corsheaders",
 ]
 
 # Rest Framework Config
@@ -60,6 +60,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -99,16 +100,29 @@ WSGI_APPLICATION = "appcore.wsgi.application"
 # }
 
 
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': 'epasscar_attendence',
+# 		'USER': 'epasscar_attendence',
+# 		'PASSWORD': 'k^OSf)$I9x%*',
+# 		'HOST':'localhost',
+# 		'PORT':'3306',
+# 	}
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zkapi',
-        'USER': 'zkapi',
-        'PASSWORD': '=]-[0p9o+}_{)P(O',
+        'NAME': 'attendence',
+        'USER': 'attendence',
+        'PASSWORD': 'k^OSf)$I9x%*',
         'HOST': 'localhost',
-        'PORT': '',
+        'PORT': '5432'
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -169,3 +183,10 @@ EMAIL_HOST_PASSWORD = ''
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://attendence.webonedevs.com",
+]
