@@ -10,7 +10,7 @@ services:
     build:
       context: .
     ports:
-      - "8000:8000"
+      - "8000:8000"  # This can be internal only; Nginx will handle external requests
     depends_on:
       - postgres
     environment:
@@ -22,8 +22,10 @@ services:
     build: ./nginx
     volumes:
       - static:/static
+      - ./path/to/certificates:/etc/letsencrypt  # Mount the directory with your SSL certificates
     ports:
-      - "80:80"
+      - "8080:80"
+      - "443:443"  # Expose port 443 for HTTPS traffic
     depends_on:
       - django_gunicorn
     restart: always
