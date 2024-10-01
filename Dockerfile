@@ -6,8 +6,10 @@ ENV PYTHONUNBUFFERED=1
 
 # Install dependencies
 RUN pip install --upgrade pip
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+
+# Copy the requirements file first
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install -r /app/requirements.txt
 
 # Copy the application code
 COPY . /app
